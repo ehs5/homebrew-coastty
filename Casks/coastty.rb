@@ -12,9 +12,18 @@ cask "coastty" do
   app "Coastty.app"
   binary "#{appdir}/Coastty.app/Contents/MacOS/coastty"
 
+  # coastty-host keeps shells running after the app quits, so uninstalling stops this install's daemon too
+  uninstall quit:   "com.espensteen.coastty",
+            script: {
+              executable:   "/usr/bin/pkill",
+              args:         ["-TERM", "-f", "#{appdir}/Coastty.app/Contents/MacOS/coastty-host"],
+              must_succeed: false,
+            }
+
   zap trash: [
     "~/.config/coastty",
     "~/.local/state/coastty-host",
+    "~/Library/Application Support/com.espensteen.coastty",
     "~/Library/Caches/com.espensteen.coastty",
     "~/Library/HTTPStorages/com.espensteen.coastty",
     "~/Library/Preferences/com.espensteen.coastty.plist",
